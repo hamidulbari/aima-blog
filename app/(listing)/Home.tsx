@@ -30,8 +30,8 @@ interface Blog {
 
 interface HomePageProps {
   searchParams?:
-    | { page?: string; category?: string; keyword?: string }
-    | Promise<{ page?: string; category?: string; keyword?: string }>;
+  | { page?: string; category?: string; keyword?: string }
+  | Promise<{ page?: string; category?: string; keyword?: string }>;
 }
 
 const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
@@ -48,6 +48,7 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
   const blogs: Blog[] = blogsData?.data?.articles || [];
   const meta = blogsData?.meta || { current_page: 1, last_page: 1, total: 0 };
   const categories: Category[] = categoriesData?.data || [];
+  console.log('categories', categories)
   const bannerHtml = bannerData?.data?.html || "";
 
   const totalPages = Number(meta.last_page) || 1;
@@ -261,11 +262,10 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                             <Link
                               key={`page-${page}-${index}`}
                               href={buildListingHref(Number(page))}
-                              className={`px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center ${
-                                currentPage === page
-                                  ? "bg-[var(--primary-color)] text-white"
-                                  : ""
-                              }`}
+                              className={`px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center ${currentPage === page
+                                ? "bg-[var(--primary-color)] text-white"
+                                : ""
+                                }`}
                             >
                               {page}
                             </Link>

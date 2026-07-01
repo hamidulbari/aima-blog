@@ -3,15 +3,18 @@ import Link from "next/link";
 import { FaSearch } from "react-icons/fa";
 import sidebarImg from "./../../public/images/blog-item.jpg";
 
-const Sidebar: React.FC = () => {
-  const categories = [
-    { name: "Articles", count: 1, href: "#" },
-    { name: "Management", count: 36, href: "#" },
-    { name: "Perspectives", count: 17, href: "#" },
-    { name: "Technology", count: 12, href: "#" },
-    { name: "Thought Leadership", count: 38, href: "#" },
-    { name: "Uncategorized", count: 18, href: "#" },
-  ];
+import { getBlogCategories } from "../actionCreator/home.actionCreator";
+
+interface Category {
+  id: number;
+  title: string;
+  slug: string;
+  article_count: number;
+}
+
+const Sidebar = async () => {
+  const categoriesData = await getBlogCategories();
+  const categories: Category[] = categoriesData?.data || [];
 
   const recentPosts = [
     {
@@ -66,12 +69,12 @@ const Sidebar: React.FC = () => {
           <div className="category-list mt-4 flex flex-col gap-3">
             {categories.map((category) => (
               <Link
-                key={category.name}
-                href={category.href}
+                key={category.id}
+                href={`/listing?category=${category.slug}`}
                 className="flex items-center justify-between hover:text-[var(--primary-color)]"
               >
-                {category.name}
-                <span>({category.count})</span>
+                {category.title}
+                <span>({category.article_count})</span>
               </Link>
             ))}
           </div>
