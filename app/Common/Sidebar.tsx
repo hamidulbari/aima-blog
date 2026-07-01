@@ -2,8 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaSearch } from "react-icons/fa";
 import sidebarImg from "./../../public/images/blog-item.jpg";
+import noImg from "../../public/images/noimg.jpg";
 
-import { getBlogCategories } from "../actionCreator/home.actionCreator";
+import {
+  getBlogCategories,
+  getBlogsByCategory,
+} from "../actionCreator/home.actionCreator";
+import { stringify } from "querystring";
 
 interface Category {
   id: number;
@@ -12,27 +17,46 @@ interface Category {
   article_count: number;
 }
 
-const Sidebar = async () => {
+interface recentPosts {
+  id: number;
+  title: string;
+  slug: string;
+  thumbnail: string;
+}
+interface HomePageProps {
+  searchParams?:
+    | { page?: string; category?: string; keyword?: string }
+    | Promise<{ page?: string; category?: string; keyword?: string }>;
+}
+const Sidebar: React.FC<HomePageProps> = async ({ searchParams }) => {
   const categoriesData = await getBlogCategories();
+  const resolvedSearchParams = await Promise.resolve(searchParams);
   const categories: Category[] = categoriesData?.data || [];
+  const page = Number(resolvedSearchParams?.page) || 1;
+  const category = resolvedSearchParams?.category || "all";
+  const keyword = resolvedSearchParams?.keyword || "";
+  const blogsData = await getBlogsByCategory({ category, page, keyword });
+  const recentPosts: recentPosts[] = blogsData?.data?.articles || [];
 
-  const recentPosts = [
-    {
-      title: "Next-gen reforms: Driving bottom-up growth",
-      image: sidebarImg,
-      href: "#",
-    },
-    {
-      title: "Technology trends shaping the future",
-      image: sidebarImg,
-      href: "#",
-    },
-    {
-      title: "Thought leadership in modern business",
-      image: sidebarImg,
-      href: "#",
-    },
-  ];
+  console.log("This is recent post: " + JSON.stringify(recentPosts));
+  // console.log(JSON.stringify(recentPosts).thumbnail);
+  // const recentPosts = [
+  //   {
+  //     title: "Next-gen reforms: Driving bottom-up growth",
+  //     image: sidebarImg,
+  //     href: "#",
+  //   },
+  //   {
+  //     title: "Technology trends shaping the future",
+  //     image: sidebarImg,
+  //     href: "#",
+  //   },
+  //   {
+  //     title: "Thought leadership in modern business",
+  //     image: sidebarImg,
+  //     href: "#",
+  //   },
+  // ];
   return (
     <>
       <div className="sidebar flex flex-col gap-10">
@@ -67,14 +91,14 @@ const Sidebar = async () => {
             </div>
           </div>
           <div className="category-list mt-4 flex flex-col gap-3">
-            {categories.map((category) => (
+            {categories.map((cat: Category, index) => (
               <Link
-                key={category.id}
-                href={`/listing?category=${category.slug}`}
+                key={cat.id}
+                href={"#"}
                 className="flex items-center justify-between hover:text-[var(--primary-color)]"
               >
-                {category.title}
-                <span>({category.article_count})</span>
+                {cat.title}
+                <span>({cat.article_count})</span>
               </Link>
             ))}
           </div>
@@ -90,18 +114,30 @@ const Sidebar = async () => {
             </div>
           </div>
           <div className="category-list mt-4">
-            {recentPosts.map((post) => (
+            {recentPosts.slice(0, 5).map((post) => (
               <Link
                 key={post.title}
-                href={post.href}
-                className="flex items-start gap-3 py-4 border-b border-gray-200 last:border-b-0 hover:text-[var(--primary-color)]"
+                href={`/${post.categories?.[0]?.slug}/${post.slug}`}
+                className="grid grid-cols-[100px_1fr] items-start gap-3 py-4 border-b border-gray-200 last:border-b-0 hover:text-[var(--primary-color)]"
               >
-                <Image
-                  alt={post.title}
-                  src={post.image}
-                  className="w-[100px] h-[70px] object-cover rounded"
-                />
-                <span>{post.title}</span>
+                {post?.thumbnail ? (
+                  <Image
+                    alt={post.title}
+                    src={post.thumbnail}
+                    width={100}
+                    height={70}
+                    className="w-[100px] h-[70px] object-cover rounded"
+                  />
+                ) : (
+                  <Image
+                    src={noImg}
+                    alt={post?.title}
+                    width={100}
+                    height={70}
+                    className="!w-[100px] h-[70px] w-full rounded object-cover"
+                  />
+                )}
+                <span>{post?.title}</span>
               </Link>
             ))}
           </div>
