@@ -1,9 +1,15 @@
-import HomePage from "./listing/Home";
+import HomePage from "./(listing)/Home";
 
-export default function Home() {
+interface HomeProps {
+  searchParams?:
+    | { page?: string; category?: string; keyword?: string }
+    | Promise<{ page?: string; category?: string; keyword?: string }>;
+}
+
+export default function Home({ searchParams }: HomeProps) {
   return (
     <>
-      <HomePage />
+      <HomePage searchParams={searchParams} />
     </>
   );
 }

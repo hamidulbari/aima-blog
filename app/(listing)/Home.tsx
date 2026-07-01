@@ -29,13 +29,17 @@ interface Blog {
 }
 
 interface HomePageProps {
-  searchParams?: { page?: string; category?: string; keyword?: string };
+  searchParams?:
+    | { page?: string; category?: string; keyword?: string }
+    | Promise<{ page?: string; category?: string; keyword?: string }>;
 }
 
 const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
-  const page = Number(searchParams?.page) || 1;
-  const category = searchParams?.category || "all";
-  const keyword = searchParams?.keyword || "";
+  const resolvedSearchParams = await Promise.resolve(searchParams);
+
+  const page = Number(resolvedSearchParams?.page) || 1;
+  const category = resolvedSearchParams?.category || "all";
+  const keyword = resolvedSearchParams?.keyword || "";
 
   const bannerData = await getBlogBanner();
   const categoriesData = await getBlogCategories();
@@ -46,8 +50,18 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
   const categories: Category[] = categoriesData?.data || [];
   const bannerHtml = bannerData?.data?.html || "";
 
-  const totalPages = meta.last_page || 1;
-  const currentPage = meta.current_page || 1;
+  const totalPages = Number(meta.last_page) || 1;
+  const currentPage = Number(meta.current_page) || 1;
+
+  const buildListingHref = (nextPage: number, nextCategory = category) => {
+    const query = new URLSearchParams();
+    query.set("page", String(nextPage));
+    query.set("category", nextCategory);
+    if (keyword) {
+      query.set("keyword", keyword);
+    }
+    return `?${query.toString()}`;
+  };
 
   const getPagination = () => {
     const pages: (number | string)[] = [];
@@ -101,10 +115,10 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                 All
               </Link>
             </li>
-            {categories.map((cat: Category) => (
-              <li key={cat.id}>
+            {categories.map((cat: Category, index) => (
+              <li key={`${cat.id}-${cat.slug}-${index}`}>
                 <Link
-                  href={`/?category=${cat.slug}`}
+                  href={buildListingHref(1, cat.slug)}
                   className={category === cat.slug ? "active" : ""}
                 >
                   {cat.title} ({cat.article_count})
@@ -127,8 +141,8 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
               ) : (
                 <>
                   <div className="grid md:grid-cols-2 grid-cols-1 gap-[40px]">
-                    {blogs.map((blog: Blog) => (
-                      <div key={blog.id} className="blog-item">
+                    {blogs.map((blog: Blog, blogIndex) => (
+                      <div key={`${blog.id}-${blog.slug}-${blogIndex}`} className="blog-item">
                         <div className="item-wrapper">
                           <div className="img-wrapper rounded-t-lg overflow-hidden relative">
                             {blog.thumbnail ? (
@@ -187,9 +201,9 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                               {blog.categories &&
                                 blog.categories.length > 0 && (
                                   <div className="flex flex-wrap gap-2">
-                                    {blog.categories.map((cat: Category) => (
+                                    {blog.categories.map((cat: Category, catIndex) => (
                                       <span
-                                        key={cat.id}
+                                        key={`${blog.id}-${cat.id}-${cat.slug}-${catIndex}`}
                                         className="text-xs bg-gray-100 px-2 py-1 rounded"
                                       >
                                         {cat.title}
@@ -231,7 +245,7 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                       <div className="flex flex-row flex-wrap gap-3">
                         {currentPage > 1 && (
                           <Link
-                            href={`/listing?page=${currentPage - 1}&category=${category}${keyword ? `&keyword=${keyword}` : ""}`}
+                            href={buildListingHref(currentPage - 1)}
                             className="px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center"
                           >
                             Prev
@@ -245,8 +259,8 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                             </span>
                           ) : (
                             <Link
-                              key={page}
-                              href={`/listing?page=${page}&category=${category}${keyword ? `&keyword=${keyword}` : ""}`}
+                              key={`page-${page}-${index}`}
+                              href={buildListingHref(Number(page))}
                               className={`px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center ${
                                 currentPage === page
                                   ? "bg-[var(--primary-color)] text-white"
@@ -260,7 +274,7 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
 
                         {currentPage < totalPages && (
                           <Link
-                            href={`/listing?page=${currentPage + 1}&category=${category}${keyword ? `&keyword=${keyword}` : ""}`}
+                            href={buildListingHref(currentPage + 1)}
                             className="px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center"
                           >
                             Next
