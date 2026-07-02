@@ -61,10 +61,10 @@ const Header: React.FC = () => {
                     href={data.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group bg-[var(--light-background-color)] hover:bg-[var(--primary-color)] transition-[var(--global-transitions)] rounded w-[35px] h-[35px] md:w-[50px] md:h-[50px] flex items-center justify-center"
+                    className="group bg-[var(--light-background-color)] hover:bg-[var(--primary-color)] transition-[var(--global-transitions)] rounded w-[45px] h-[45px] md:w-[50px] md:h-[50px] flex items-center justify-center"
                   >
                     {Icon && (
-                      <Icon className="text-xl md:text-[25px] group-hover:!text-white primary-color transition-colors" />
+                      <Icon className="text-2xl md:text-[25px] group-hover:!text-white primary-color transition-colors" />
                     )}
                   </a>
                 );

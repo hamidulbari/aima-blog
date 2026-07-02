@@ -1,0 +1,200 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap");
+@import "tailwindcss";
+
+:root {
+  --primary-color: #0056a2;
+  --secondary-color: #fec713;
+  --golden-color: #e4ab25;
+  --body-color: #252525;
+  --white-color: #fff;
+  --border-color: #dbeafe;
+  --box-bg-color: #f7f7f724;
+  --light-background-color: #f7f7f7;
+  --global-transitions: all 0.5s ease-in-out;
+  --heading-font: "Playfair", serif;
+  --body-font: "DM Sans", sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-5 py-2 min-w-[100px] text-center inline-block  text-white rounded-[4px] border-2;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: var(--global-transitions);
+    cursor: pointer;
+  }
+
+  .section-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+.btn-primary:hover {
+  background-color: var(--white-color);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-secondary {
+  @apply px-5 py-2 min-w-[100px] text-center inline-block  text-white rounded-[4px] border-2;
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+  transition: var(--global-transitions) !important;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: var(--white-color) !important;
+  color: var(--body-color) !important;
+  border-color: var(--body-color) !important;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-black hover:bg-gray-300;
+}
+
+.btn-outline {
+  @apply px-5 py-2 text-center min-w-[100px] rounded-[4px] border-2;
+  background-color: transparent;
+  transition: var(--global-transitions);
+  color: var(--primary-color);
+  cursor: pointer;
+  border-color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  border-color: var(--primary-color);
+}
+
+.section-spacing {
+  @apply py-[50px] md:py-[70px] lg:py-[80px] px-[10px] md:px-[20px];
+}
+
+.input-with-bg {
+  @apply block w-full px-[15px] py-[10px] border bg-white rounded-sm focus:border-2;
+  border-color: var(--primary-color);
+  transition: var(--global-transitions);
+  color: var(--body-color);
+  font-family: inherit;
+}
+
+body {
+  color: var(--body-color);
+  font-family: var(--body-font), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading-font);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* H2 */
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* H3 */
+h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* H4-H6 */
+h4,
+h5,
+h6 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.transition-global {
+  transition: var(--global-transitions);
+}
+
+p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+.primary-color {
+  color: var(--primary-color);
+}
+
+.custom-nav-link li a {
+  transition: var(--global-transitions);
+  position: relative;
+  color: var(--white-color);
+}
+
+.custom-nav-link li a::after {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: -9px;
+  width: 0;
+  background-color: var(--secondary-color);
+  z-index: 23;
+  height: 2px;
+  transition: var(--global-transitions);
+}
+.custom-nav-link li a.active::after {
+  width: 100% !important;
+}
+.custom-nav-link li a:hover::after {
+  width: 100%;
+}
