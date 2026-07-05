@@ -93,14 +93,14 @@ const Footer: React.FC = () => {
           </div>
         </div> */}
         <div className="section-container  ">
-          <div className="flex flex-col md:flex-row items-center gap-2.5 justify-between">
-            <p className=" !mb-0 relative z-20 !text-white">
-              © Copyrights {new Date().getFullYear()}. All Rights Reserved.
-            </p>
-            {/* <p className="  !mb-0 relative z-20 !text-white">
+          {/* <div className="flex flex-col md:flex-row items-center gap-2.5 justify-between"> */}
+          <p className=" !mb-0 relative text-center z-20 !text-white">
+            © Copyrights {new Date().getFullYear()}. All Rights Reserved.
+          </p>
+          {/* <p className="  !mb-0 relative z-20 !text-white">
               Designed by Sanntra
             </p> */}
-          </div>
+          {/* </div> */}
         </div>
       </footer>
     </>
