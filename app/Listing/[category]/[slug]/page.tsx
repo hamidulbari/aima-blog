@@ -77,10 +77,10 @@ const PostPage = async ({ params }: PostPageProps) => {
                   </li>
                   <li>
                     <Link
-                      href={`/${category}`}
+                      href={`/Listing?category=${category}`}
                       className="text-[var(--primary-color)] capitalize"
                     >
-                      {category.replace(/-/g, " ")}
+                      {category?.replace(/-/g, " ")}
                     </Link>
                   </li>
                   <li>
@@ -89,7 +89,7 @@ const PostPage = async ({ params }: PostPageProps) => {
                       size={20}
                     />
                   </li>
-                  <li className="truncate max-w-[200px]">{blog.title}</li>
+                  <li className="truncate max-w-[200px]">{blog?.title}</li>
                 </ul>
               </div>
 
