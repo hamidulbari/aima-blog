@@ -5,8 +5,8 @@ import Image from "next/image";
 const Footer: React.FC = () => {
   return (
     <>
-      <footer className="relative text-white bg-[#030E1C] py-12  items-center">
-        <div className="section-container">
+      <footer className="relative text-white bg-[#030E1C] py-4  items-center">
+        {/* <div className="section-container">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start  relative lg:px-0 px-8 w-full mb-8">
             <div className="flex flex-col items-start lg:w-[28%]">
               <div className="flex flex-col gap-4">
@@ -91,16 +91,15 @@ const Footer: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="section-container mt-5">
-          <div className="border-t border-white/30"></div>
-          <div className="flex flex-col md:flex-row items-center gap-2.5 justify-between mt-4">
+        </div> */}
+        <div className="section-container  ">
+          <div className="flex flex-col md:flex-row items-center gap-2.5 justify-between">
             <p className=" !mb-0 relative z-20 !text-white">
-              © Copyrights 2025. All Rights Reserved.
+              © Copyrights {new Date().getFullYear()}. All Rights Reserved.
             </p>
-            <p className="  !mb-0 relative z-20 !text-white">
+            {/* <p className="  !mb-0 relative z-20 !text-white">
               Designed by Sanntra
-            </p>
+            </p> */}
           </div>
         </div>
       </footer>
