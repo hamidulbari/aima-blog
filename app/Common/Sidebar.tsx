@@ -275,15 +275,26 @@ interface RecentPostCategory {
   slug: string;
 }
 
+// interface RecentPost {
+//   id: number;
+//   title: string;
+//   slug: string;
+//   thumbnail?: string;
+//   edition: string;
+//   source: string;
+//   short_description: string;
+//   // categories: RecentPostCategory[];
+//   categories?: Category[];
+// }
 interface RecentPost {
   id: number;
   title: string;
   slug: string;
-  thumbnail: string | null;
+  thumbnail?: string;
   edition: string;
   source: string;
   short_description: string;
-  categories: RecentPostCategory[];
+  categories?: Category[];
 }
 
 const Sidebar: React.FC<HomePageProps> = async ({ searchParams }) => {
@@ -359,7 +370,7 @@ const Sidebar: React.FC<HomePageProps> = async ({ searchParams }) => {
             </div>
           </div>
           <div className="category-list mt-4">
-            {recentPosts.slice(0, 5).map((post) => (
+            {/* {recentPosts.slice(0, 5).map((post) => (
               <Link
                 key={post.title}
                 href={`/Listing/${post.categories[0]?.slug ?? "uncategorized"}/${post.slug}`}
@@ -383,6 +394,32 @@ const Sidebar: React.FC<HomePageProps> = async ({ searchParams }) => {
                   />
                 )}
                 <span>{post?.title}</span>
+              </Link>
+            ))} */}
+            {recentPosts.slice(0, 5).map((post) => (
+              <Link
+                key={post.id}
+                href={`/Listing/${post.categories?.[0]?.slug ?? "uncategorized"}/${post.slug}`}
+                className="grid grid-cols-[100px_1fr] items-start gap-3 py-4 border-b border-gray-200 last:border-b-0 hover:text-[var(--primary-color)]"
+              >
+                {post.thumbnail ? (
+                  <Image
+                    alt={post.title}
+                    src={post.thumbnail}
+                    width={100}
+                    height={70}
+                    className="w-[100px] h-[70px] object-cover rounded"
+                  />
+                ) : (
+                  <Image
+                    src={noImg}
+                    alt={post.title}
+                    width={100}
+                    height={70}
+                    className="w-[100px] h-[70px] object-cover rounded"
+                  />
+                )}
+                <span>{post.title}</span>
               </Link>
             ))}
           </div>
