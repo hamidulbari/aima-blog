@@ -149,7 +149,7 @@
 //   const blogsData = await getBlogsByCategory({ category, page, keyword });
 //   const recentPosts: recentPosts[] = blogsData?.data?.articles || [];
 
-//   console.log("This is recent post: " + JSON.stringify(recentPosts));
+//   .log("This is recent post: " + JSON.stringify(recentPosts));
 
 //   return (
 //     <>
@@ -275,17 +275,6 @@ interface RecentPostCategory {
   slug: string;
 }
 
-// interface RecentPost {
-//   id: number;
-//   title: string;
-//   slug: string;
-//   thumbnail?: string;
-//   edition: string;
-//   source: string;
-//   short_description: string;
-//   // categories: RecentPostCategory[];
-//   categories?: Category[];
-// }
 interface RecentPost {
   id: number;
   title: string;
@@ -311,7 +300,7 @@ const Sidebar: React.FC<HomePageProps> = async ({ searchParams }) => {
   const categoriesData = await getBlogCategories();
   const categories: Category[] = categoriesData?.data || [];
 
-  console.log("This is recent post: " + JSON.stringify(recentPosts));
+  // console.log("This is recent post: " + JSON.stringify(recentPosts));
 
   return (
     <>

@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { FaListUl } from "react-icons/fa";
 import noImg from "../../../../public/images/noimg.jpg";
+
 interface PostPageProps {
   params: Promise<{
     category: string;
@@ -16,29 +17,46 @@ interface PostPageProps {
   }>;
 }
 
-const PostPage = async ({ params }: PostPageProps) => {
-  // ✅ Logging goes INSIDE the function
-  const { category, slug } = await params;
+export async function generateMetadata({
+  params,
+}: PostPageProps): Promise<Metadata> {
+  const { slug } = await params;
   const blogData = await getBlogDetails({ slug });
 
-  console.log("blogData.data");
-  console.dir(blogData.data, { depth: null });
+  if (!blogData?.status || !blogData?.data?.article) {
+    return {
+      title: "Blog Post Not Found",
+      description: "The requested blog post could not be found.",
+    };
+  }
 
-  console.log("Keys:", Object.keys(blogData.data));
+  const blog = blogData.data.article;
+
+  return {
+    title: blog?.title || "Blog Post",
+    description:
+      blog?.short_description?.substring(0, 160) ||
+      blog?.long_description?.substring(0, 10) ||
+      "",
+    openGraph: {
+      title: blog?.title,
+      description: blog?.short_description || "",
+      images: blog?.thumbnail ? [blog.thumbnail] : [],
+    },
+  };
+}
+
+const PostPage = async ({ params }: PostPageProps) => {
+  const { category, slug } = await params;
+  const blogData = await getBlogDetails({ slug });
 
   if (!blogData?.status || !blogData?.data) {
     notFound();
   }
 
-  //const blog = blogData.data;
   const blog = blogData.data.article;
   const latestArticles = blogData.data.latest_articles ?? [];
   const relatedArticles = blogData.data.related_articles ?? [];
-  console.log("BLOG OBJECT");
-  console.dir(blog, { depth: null });
-  console.log("BLOG TITLE:", blog?.title);
-  console.log("BLOG THUMBNAIL:", blog?.thumbnail);
-  console.log("BLOG CONTENT:", blog?.content?.length);
 
   return (
     <>
