@@ -1,15 +1,15 @@
-import HomePage from "./(listing)/Home";
+import HomePage from "./Listing/Home";
 
 interface HomeProps {
-  searchParams?:
-    | { page?: string; category?: string; keyword?: string }
-    | Promise<{ page?: string; category?: string; keyword?: string }>;
+  searchParams?: Promise<{
+    page?: string;
+    category?: string;
+    keyword?: string;
+  }>;
 }
 
-export default function Home({ searchParams }: HomeProps) {
-  return (
-    <>
-      <HomePage searchParams={searchParams} />
-    </>
-  );
+export default async function Home({ searchParams }: HomeProps) {
+  const params = searchParams ? await searchParams : {};
+
+  return <HomePage searchParams={params} />;
 }

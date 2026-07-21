@@ -29,40 +29,43 @@ interface Blog {
 }
 
 interface HomePageProps {
-  searchParams?:
-  | { page?: string; category?: string; keyword?: string }
-  | Promise<{ page?: string; category?: string; keyword?: string }>;
+  searchParams?: {
+    page?: string;
+    category?: string;
+    keyword?: string;
+  };
 }
 
 const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
-  const resolvedSearchParams = await Promise.resolve(searchParams);
+  // console.log("======================================");
+  // console.log("LISTING HOME");
+  // console.log("searchParams:", searchParams);
 
-  const page = Number(resolvedSearchParams?.page) || 1;
-  const category = resolvedSearchParams?.category || "all";
-  const keyword = resolvedSearchParams?.keyword || "";
+  const page = Number(searchParams?.page) || 1;
+  const category = searchParams?.category || "all";
+  const keyword = searchParams?.keyword || "";
 
   const bannerData = await getBlogBanner();
+  // console.log("Banner API:", bannerData);
   const categoriesData = await getBlogCategories();
-  const blogsData = await getBlogsByCategory({ category, page, keyword });
+
+  // console.log("Categories API:", categoriesData);
+
+  const blogsData = await getBlogsByCategory({
+    category,
+    page,
+    keyword,
+  });
+
+  // console.log("Blogs API:", JSON.stringify(blogsData, null, 2));
 
   const blogs: Blog[] = blogsData?.data?.articles || [];
   const meta = blogsData?.meta || { current_page: 1, last_page: 1, total: 0 };
   const categories: Category[] = categoriesData?.data || [];
-  console.log('categories', categories)
   const bannerHtml = bannerData?.data?.html || "";
 
-  const totalPages = Number(meta.last_page) || 1;
-  const currentPage = Number(meta.current_page) || 1;
-
-  const buildListingHref = (nextPage: number, nextCategory = category) => {
-    const query = new URLSearchParams();
-    query.set("page", String(nextPage));
-    query.set("category", nextCategory);
-    if (keyword) {
-      query.set("keyword", keyword);
-    }
-    return `?${query.toString()}`;
-  };
+  const totalPages = meta.last_page || 1;
+  const currentPage = meta.current_page || 1;
 
   const getPagination = () => {
     const pages: (number | string)[] = [];
@@ -87,7 +90,9 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
   };
 
   const paginations = getPagination();
-
+  // console.log("Blogs Count:", blogs.length);
+  // console.log("Current Page:", currentPage);
+  // console.log("======================================");
   return (
     <>
       {/* Banner Section */}
@@ -107,19 +112,19 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
       {/* Categories Navigation */}
       <section className="bg-[var(--primary-color)] py-4">
         <div className="section-container">
-          <ul className="custom-nav-link flex flex-row gap-7 items-center overflow-x-auto">
+          <ul className="custom-nav-link flex flex-row gap-7 items-center flex-wrap">
             <li>
               <Link
-                href="/listing"
+                href="/Listing"
                 className={category === "all" ? "active" : ""}
               >
                 All
               </Link>
             </li>
-            {categories.map((cat: Category, index) => (
-              <li key={`${cat.id}-${cat.slug}-${index}`}>
+            {categories.map((cat: Category) => (
+              <li key={cat.id}>
                 <Link
-                  href={buildListingHref(1, cat.slug)}
+                  href={`/Listing?category=${cat.slug}`}
                   className={category === cat.slug ? "active" : ""}
                 >
                   {cat.title} ({cat.article_count})
@@ -155,8 +160,8 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
               ) : (
                 <>
                   <div className="grid md:grid-cols-2 grid-cols-1 gap-[40px]">
-                    {blogs.map((blog: Blog, blogIndex) => (
-                      <div key={`${blog.id}-${blog.slug}-${blogIndex}`} className="blog-item">
+                    {blogs.map((blog: Blog) => (
+                      <div key={blog.id} className="blog-item">
                         <div className="item-wrapper">
                           <div className="img-wrapper rounded-t-lg overflow-hidden relative">
                             {blog.thumbnail ? (
@@ -202,7 +207,7 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                                 href={`/${blog.categories[0]?.slug}/${blog.slug}`}
                               > */}
                               <Link
-                                href={`/${blog.categories?.[0]?.slug}/${blog.slug}`}
+                                href={`/Listing/${blog.categories?.[0]?.slug}/${blog.slug}`}
                               >
                                 <h3>{blog.title}</h3>
                               </Link>
@@ -215,9 +220,9 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                               {blog.categories &&
                                 blog.categories.length > 0 && (
                                   <div className="flex flex-wrap gap-2">
-                                    {blog.categories.map((cat: Category, catIndex) => (
+                                    {blog.categories.map((cat: Category) => (
                                       <span
-                                        key={`${blog.id}-${cat.id}-${cat.slug}-${catIndex}`}
+                                        key={cat.id}
                                         className="text-xs bg-gray-100 px-2 py-1 rounded"
                                       >
                                         {cat.title}
@@ -228,8 +233,7 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
 
                               <div className="link flex flex-col gap-2.5">
                                 <Link
-                                  href={`/${blog.categories?.[0]?.slug}/${blog.slug}`}
-                                  // href={`/${blog.categories[0]?.slug}/${blog.slug}`}
+                                  href={`/Listing/${blog.categories?.[0]?.slug}/${blog.slug}`}
                                   className="hover:text-[var(--golden-color)] flex items-center gap-3 transition primary-color"
                                 >
                                   Read More <FaArrowRight size={20} />
@@ -259,7 +263,7 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                       <div className="flex flex-row flex-wrap gap-3">
                         {currentPage > 1 && (
                           <Link
-                            href={buildListingHref(currentPage - 1)}
+                            href={`/Listing?page=${currentPage - 1}&category=${category}${keyword ? `&keyword=${keyword}` : ""}`}
                             className="px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center"
                           >
                             Prev
@@ -273,12 +277,13 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
                             </span>
                           ) : (
                             <Link
-                              key={`page-${page}-${index}`}
-                              href={buildListingHref(Number(page))}
-                              className={`px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center ${currentPage === page
-                                ? "bg-[var(--primary-color)] text-white"
-                                : ""
-                                }`}
+                              key={page}
+                              href={`/Listing?page=${page}&category=${category}${keyword ? `&keyword=${keyword}` : ""}`}
+                              className={`px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center ${
+                                currentPage === page
+                                  ? "bg-[var(--primary-color)] text-white"
+                                  : ""
+                              }`}
                             >
                               {page}
                             </Link>
@@ -287,7 +292,7 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
 
                         {currentPage < totalPages && (
                           <Link
-                            href={buildListingHref(currentPage + 1)}
+                            href={`/Listing?page=${currentPage + 1}&category=${category}${keyword ? `&keyword=${keyword}` : ""}`}
                             className="px-4 hover:bg-[var(--primary-color)] rounded hover:text-white transition border border-[var(--primary-color)] py-2 flex justify-center items-center"
                           >
                             Next
