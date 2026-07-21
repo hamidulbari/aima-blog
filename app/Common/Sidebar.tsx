@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FaSearch } from "react-icons/fa";
 import sidebarImg from "./../../public/images/blog-item.jpg";
+import SearchBar from "./SearchBar";
 
 import { getBlogCategories } from "../actionCreator/home.actionCreator";
 
@@ -45,16 +45,7 @@ const Sidebar = async () => {
               <div className="h-[2px] w-full bg-[var(--primary-color)]" />
             </div>
           </div>
-          <div className="search-bar w-full mt-4 flex flex-row">
-            <input
-              type="text"
-              className="rounded-s-full w-full focus:!border-[#034b8a]  px-5 py-2 border-2 border-r-0 border-[var(--primary-color)]"
-              placeholder="Search"
-            />
-            <button className="h-[50px] cursor-pointer hover:bg-[#034b8a] hover:border-[#034b8a]  w-[70px] bg-[var(--primary-color)] border-2 flex justify-center items-center  border-[var(--primary-color)]">
-              <FaSearch className="text-white" size={22} />
-            </button>
-          </div>
+          <SearchBar />
         </div>
 
         <div className="category-list">

@@ -135,6 +135,19 @@ const HomePage: React.FC<HomePageProps> = async ({ searchParams }) => {
         <div className="section-container !px-0">
           <div className="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-10">
             <div className="item">
+              {keyword && (
+                <div className="mb-6 flex items-center justify-between bg-[var(--light-background-color)] border border-[var(--border-color)] rounded-lg p-4">
+                  <span className="text-sm text-[var(--body-color)]">
+                    Showing results for &ldquo;<strong>{keyword}</strong>&rdquo;
+                  </span>
+                  <Link
+                    href={`?category=${category}`}
+                    className="text-xs text-[var(--primary-color)] hover:underline font-medium"
+                  >
+                    Clear search
+                  </Link>
+                </div>
+              )}
               {blogs.length === 0 ? (
                 <div className="text-center py-10">
                   <p>No blogs found</p>
